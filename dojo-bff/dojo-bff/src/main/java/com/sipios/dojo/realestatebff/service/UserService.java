@@ -1,6 +1,5 @@
 package com.sipios.dojo.realestatebff.service;
 
-
 import com.sipios.dojo.realestatebff.client.ApiClient;
 import com.sipios.dojo.realestatebff.service.model.Realty;
 import com.sipios.dojo.realestatebff.service.model.User;
@@ -20,7 +19,8 @@ public class UserService {
 
     public UserAmount getUserAmountDTOService() {
         User user = apiClient.retrieveCurrentUser();
-        return new UserAmount(user.id(), BigDecimal.ZERO);
+        BigDecimal amount = apiClient.retrieveUserAmount().amount();
+        return new UserAmount(user.id(), amount);
     }
 
 }

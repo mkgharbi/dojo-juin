@@ -22,6 +22,6 @@ export class RealtiesSectionComponent {
 
   handlePageEvent(event: PageEvent) {
     this.currentPageIndex = event.pageIndex;
-    this.pagedRealties = this.realties.slice(0, this.pageSize);
+    this.pagedRealties = this.realties.slice(this.currentPageIndex * this.pageSize, (this.currentPageIndex + 1) * this.pageSize);
   }
 }

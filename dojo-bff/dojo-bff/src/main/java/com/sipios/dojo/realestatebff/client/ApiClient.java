@@ -32,12 +32,16 @@ public class ApiClient {
     }
 
     public ResponseEntity<Void> login(CredentialDTO credentialDTO) {
-        return  getWebClient().post().uri("auth/login").body(BodyInserters.fromValue(credentialDTO)).retrieve().toBodilessEntity().block();
+        return getWebClient().post().uri("auth/login").body(BodyInserters.fromValue(credentialDTO)).retrieve()
+                .toBodilessEntity().block();
     }
+
     private Cookie retrieveAccessCookie() {
         var attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        return Arrays.stream(attributes.getRequest().getCookies()).filter(c -> c.getName().equals("access_token")).findFirst().orElse(null);
+        return Arrays.stream(attributes.getRequest().getCookies()).filter(c -> c.getName().equals("access_token"))
+                .findFirst().orElse(null);
     }
+
     private WebClient getWebClient() {
         return apiClientBuilder.build();
     }
@@ -45,55 +49,67 @@ public class ApiClient {
     public User retrieveCurrentUser() {
         WebClient webClient = getWebClient();
         var user = webClient
-        .get()
-        .uri("users/me")
-        .cookie("access_token", retrieveAccessCookie().getValue())
-        .retrieve().bodyToMono(UserDto.class).block();
+                .get()
+                .uri("users/me")
+                .cookie("access_token", retrieveAccessCookie().getValue())
+                .retrieve().bodyToMono(UserDto.class).block();
         return new User(user.id(), user.mail());
     }
 
-    public void buyRealty(BuyRealty buyRealty){
+    public void buyRealty(BuyRealty buyRealty) {
         WebClient webClient = getWebClient();
         BuyRealtyDto buyRealtyDto = new BuyRealtyDto(buyRealty.realtyId());
         webClient.post().uri("realties/buy")
-                .cookie("access_token", retrieveAccessCookie().getValue()).body(BodyInserters.fromValue(buyRealtyDto)).retrieve().toBodilessEntity().block();
+                .cookie("access_token", retrieveAccessCookie().getValue()).body(BodyInserters.fromValue(buyRealtyDto))
+                .retrieve().toBodilessEntity().block();
     }
 
-
-
-
+    public void sellAsset(SellRealty sellRealty) {
+        WebClient webClient = getWebClient();
+        webClient.post().uri("realties/sell")
+                .cookie("access_token", retrieveAccessCookie().getValue()).body(BodyInserters.fromValue(sellRealty))
+                .retrieve().toBodilessEntity().block();
+    }
 
     public List<Realty> retrieveAllRealties(String deedtype) {
         WebClient webClient = getWebClient();
         List<Realty> allRealities;
 
-        if (deedtype != null ) {
-            allRealities = webClient.get().uri(uriBuilder -> uriBuilder.path("realties").queryParam("type", deedtype).build()).cookie("access_token", retrieveAccessCookie().getValue()).retrieve().bodyToFlux(Realty.class).collectList().block();
+        if (deedtype != null) {
+            allRealities = webClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("realties").queryParam("type", deedtype).build())
+                    .cookie("access_token", retrieveAccessCookie().getValue()).retrieve().bodyToFlux(Realty.class)
+                    .collectList().block();
         } else {
-            allRealities = webClient.get().uri("realties").cookie("access_token", retrieveAccessCookie().getValue()).retrieve().bodyToFlux(Realty.class).collectList().block();
+            allRealities = webClient.get().uri("realties").cookie("access_token", retrieveAccessCookie().getValue())
+                    .retrieve().bodyToFlux(Realty.class).collectList().block();
         }
 
-        if(allRealities == null) return emptyList();
+        if (allRealities == null)
+            return emptyList();
 
-        reverse(allRealities);
-        return allRealities.stream().limit(5).toList();
+        return allRealities.stream().toList();
+
     }
 
     public List<Transaction> retrieveAllTransactions() {
         WebClient webClient = getWebClient();
         return webClient.get().uri("transactions")
-                .cookie("access_token", retrieveAccessCookie().getValue()).retrieve().bodyToFlux(Transaction.class).collectList().block();
+                .cookie("access_token", retrieveAccessCookie().getValue()).retrieve().bodyToFlux(Transaction.class)
+                .collectList().block();
     }
 
     public List<Asset> retrieveAllAssets() {
         WebClient webClient = getWebClient();
         return webClient.get().uri("assets")
-                .cookie("access_token", retrieveAccessCookie().getValue()).retrieve().bodyToFlux(Asset.class).collectList().block();
+                .cookie("access_token", retrieveAccessCookie().getValue()).retrieve().bodyToFlux(Asset.class)
+                .collectList().block();
     }
 
     public AmountDto retrieveUserAmount() {
         WebClient webClient = getWebClient();
         return webClient.get().uri("users/amount")
-                .cookie("access_token", retrieveAccessCookie().getValue()).retrieve().bodyToMono(AmountDto.class).block();
+                .cookie("access_token", retrieveAccessCookie().getValue()).retrieve().bodyToMono(AmountDto.class)
+                .block();
     }
 }

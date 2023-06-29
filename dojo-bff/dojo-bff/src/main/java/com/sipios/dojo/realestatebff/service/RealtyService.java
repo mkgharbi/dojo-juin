@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 public class RealtyService {
     private final ApiClient apiClient;
@@ -17,19 +16,16 @@ public class RealtyService {
         this.apiClient = apiClient;
     }
 
-    public List<Realty> getRealtiesByType(String deedtype,List<Integer> ids ){
+    public List<Realty> getRealtiesByType(String deedtype, List<Integer> ids) {
         List<Realty> realties = apiClient.retrieveAllRealties(deedtype);
-
-        if(ids == null) return  realties;
-
+        if (ids == null)
+            return realties;
         return realties.stream()
                 .filter(realty -> ids.contains(realty.id()))
                 .toList();
-
     }
 
-
-    public void buyRealty(BuyRealty buyRealty){
+    public void buyRealty(BuyRealty buyRealty) {
         apiClient.buyRealty(buyRealty);
     }
 

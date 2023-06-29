@@ -1,7 +1,7 @@
 <div class="container">
   <div class="balance">
     <h1>Solde</h1>
-    <ng-container *ngIf="amount$ | async; else emptyAmount">
+    <ng-container *ngIf="amount$ | async as amount; else emptyAmount">
       <span class="amount-value">{{ amount$ | async | currency : "EUR" : "symbol" : "1.0-0" }}</span>
     </ng-container>
   </div>

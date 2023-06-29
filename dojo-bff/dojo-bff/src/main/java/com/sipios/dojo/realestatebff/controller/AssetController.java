@@ -1,12 +1,11 @@
 package com.sipios.dojo.realestatebff.controller;
 
 import com.sipios.dojo.realestatebff.client.ApiClient;
+import com.sipios.dojo.realestatebff.controller.dto.SellRealtyDTO;
 import com.sipios.dojo.realestatebff.controller.mapper.SellRealtyMapper;
 import com.sipios.dojo.realestatebff.service.AssetService;
 import com.sipios.dojo.realestatebff.service.model.Asset;
 import org.springframework.web.bind.annotation.*;
-
-
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class AssetController {
 
     private final AssetService assetService;
 
-    public AssetController(ApiClient apiClient, AssetService assetService,  SellRealtyMapper sellRealtyMapper) {
+    public AssetController(ApiClient apiClient, AssetService assetService, SellRealtyMapper sellRealtyMapper) {
         this.apiClient = apiClient;
         this.assetService = assetService;
         this.sellRealtyMapper = sellRealtyMapper;
@@ -31,7 +30,9 @@ public class AssetController {
         return apiClient.retrieveAllAssets();
     }
 
-
-
+    @PostMapping("/sell")
+    public void sellAsset(@RequestBody SellRealtyDTO sellRealtyDTO) {
+        this.assetService.sellAsset(sellRealtyMapper.from(sellRealtyDTO));
+    }
 
 }

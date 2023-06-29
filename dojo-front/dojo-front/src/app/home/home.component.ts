@@ -18,10 +18,11 @@ export class HomeComponent implements OnInit {
     private userService: UserService
   ) {}
 
+
   ngOnInit() {
     this.transactions$ = this.transactionService.fetchTransactions();
-    setInterval(() => {
-      this.amount$ = this.userService.fetchUserAmount()
-    }, 7200000);
+    this.amount$ = this.userService.fetchUserAmount()
+
   }
+
 }
